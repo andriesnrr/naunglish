@@ -3,7 +3,7 @@ import Link from "next/link"
 export default function Header() {
   return (
     <header
-      className="sticky top-0 z-50 flex items-center justify-between px-4 h-14"
+      className="md:hidden sticky top-0 z-50 flex items-center justify-between px-4 h-14"
       style={{
         backgroundColor: "#051f1f",
         borderBottom: "1px solid #c1c8c7",

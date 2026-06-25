@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { createServiceClient } from "@/lib/supabase"
 import AdminClient from "./AdminClient"
+import GenerateAllCard from "./GenerateAllCard"
 
 export default async function AdminPage() {
   const session = await auth()
@@ -42,6 +43,7 @@ export default async function AdminPage() {
         </p>
       </div>
 
+      <GenerateAllCard />
       <AdminClient users={users ?? []} />
     </div>
   )
