@@ -3,7 +3,7 @@ import Link from "next/link"
 export default function Header() {
   return (
     <header
-      className="sticky top-0 z-50 flex items-center px-4 h-14"
+      className="sticky top-0 z-50 flex items-center justify-between px-4 h-14"
       style={{
         backgroundColor: "#051f1f",
         borderBottom: "1px solid #c1c8c7",
@@ -21,6 +21,16 @@ export default function Header() {
           style={{ fontFamily: "Source Serif 4, serif" }}
         >
           Naunglish
+        </span>
+      </Link>
+
+      <Link
+        href="/profile"
+        className="flex items-center justify-center w-9 h-9 rounded-full no-underline transition-colors hover:bg-white/10"
+        aria-label="Profile"
+      >
+        <span className="material-symbols-outlined text-white" style={{ fontSize: "22px" }}>
+          account_circle
         </span>
       </Link>
     </header>

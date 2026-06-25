@@ -56,6 +56,14 @@ export default function OnboardingFlow({ questions, defaultName }: Props) {
     }
   }, [submitting, name, examDate, answers, questions])
 
+  if (questions.length === 0) {
+    return (
+      <p className="text-center text-body-md" style={{ color: "#727878" }}>
+        No placement questions available. Please contact the admin.
+      </p>
+    )
+  }
+
   const q = questions[current]
 
   // Profile phase

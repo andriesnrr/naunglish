@@ -14,8 +14,12 @@ export async function POST(req: Request) {
   const supabase = createServiceClient()
   const userId = session.user.id
 
-  let cefrResult = "B1" // default if no questions
-  if (questions?.length > 0 && answers) {
+  if (!questions?.length) {
+    return NextResponse.json({ error: "No placement questions available. Run seed first." }, { status: 500 })
+  }
+
+  let cefrResult = "B1"
+  if (answers) {
     const correct = questions.filter((q: { id: string; answer: number }) => answers[q.id] === q.answer).length
     const pct = Math.round((correct / questions.length) * 100)
     cefrResult = getCEFR(pct)
