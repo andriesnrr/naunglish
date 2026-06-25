@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import type { Question } from "@/types"
 import { SKILL_COLORS } from "@/types"
 import ScoreRing from "@/components/ScoreRing"
@@ -32,6 +34,7 @@ function formatTime(s: number) {
 }
 
 export default function MockTest({ questions, durationSeconds = 1800 }: Props) {
+  const router = useRouter()
   const [phase, setPhase] = useState<"intro" | "test" | "result">("intro")
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({})
@@ -83,9 +86,43 @@ export default function MockTest({ questions, durationSeconds = 1800 }: Props) {
   const pct = Math.round((answeredCount / questions.length) * 100)
   const timerWarning = timeLeft < 300
 
+  const StickyHeader = (
+    <div
+      className="sticky top-0 z-40 flex items-center justify-between px-4 h-14"
+      style={{ backgroundColor: "#051f1f", borderBottom: "1px solid #c1c8c7" }}
+    >
+      {phase !== "test" ? (
+        <Link href="/dashboard" className="flex items-center gap-1 no-underline" style={{ color: "#6f8988" }}>
+          <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>arrow_back</span>
+          <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12px" }}>BACK</span>
+        </Link>
+      ) : (
+        <button
+          onClick={() => { if (window.confirm("Quit mock test? Progress will be lost.")) router.push("/dashboard") }}
+          style={{ color: "#6f8988", background: "none", border: "none", cursor: "pointer", fontFamily: "JetBrains Mono, monospace", fontSize: "12px", display: "flex", alignItems: "center", gap: "4px" }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>close</span>
+          QUIT
+        </button>
+      )}
+      <span style={{ color: "#ffffff", fontFamily: "Source Serif 4, serif", fontWeight: 700, fontSize: "18px" }}>
+        Mock Test
+      </span>
+      {phase === "test" ? (
+        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "14px", fontWeight: 700, color: timerWarning ? "#ef4444" : "#d4af37" }}>
+          {formatTime(timeLeft)}
+        </span>
+      ) : (
+        <div style={{ width: "60px" }} />
+      )}
+    </div>
+  )
+
   if (phase === "intro") {
     return (
-      <div className="card p-8 flex flex-col gap-6 max-w-xl mx-auto">
+      <div>
+        {StickyHeader}
+      <div className="card p-8 flex flex-col gap-6 max-w-xl mx-auto mt-6">
         <div>
           <span className="text-label-caps" style={{ color: "#727878" }}>MOCK TEST</span>
           <h2
@@ -121,12 +158,15 @@ export default function MockTest({ questions, durationSeconds = 1800 }: Props) {
           Start Test →
         </button>
       </div>
+      </div>
     )
   }
 
   if (phase === "result" && result) {
     return (
-      <div className="flex flex-col gap-6 max-w-xl mx-auto">
+      <div>
+        {StickyHeader}
+      <div className="flex flex-col gap-6 max-w-xl mx-auto px-4 py-6">
         {/* Score */}
         <div className="card p-8 flex flex-col items-center gap-4 text-center">
           <ScoreRing pct={result.totalScore} size={140} />
@@ -190,41 +230,31 @@ export default function MockTest({ questions, durationSeconds = 1800 }: Props) {
           Back to Dashboard
         </a>
       </div>
+      </div>
     )
   }
 
   // Test phase
   return (
-    <div className="flex flex-col gap-5 max-w-xl mx-auto">
-      {/* Header bar */}
-      <div className="flex items-center justify-between">
-        {/* Progress */}
-        <div className="flex flex-col gap-1 flex-1 mr-4">
-          <div className="flex justify-between">
-            <span className="text-xs" style={{ fontFamily: "JetBrains Mono, monospace", color: "#727878" }}>
-              {current + 1} / {questions.length}
-            </span>
-            <span className="text-xs" style={{ fontFamily: "JetBrains Mono, monospace", color: "#727878" }}>
-              {answeredCount} answered
-            </span>
-          </div>
-          <div className="w-full h-1 rounded-full bg-[#e8efef] overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all"
-              style={{ width: `${pct}%`, backgroundColor: "#051f1f" }}
-            />
-          </div>
+    <div>
+      {StickyHeader}
+    <div className="flex flex-col gap-5 max-w-xl mx-auto px-4 py-4">
+      {/* Progress bar */}
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between">
+          <span className="text-xs" style={{ fontFamily: "JetBrains Mono, monospace", color: "#727878" }}>
+            {current + 1} / {questions.length}
+          </span>
+          <span className="text-xs" style={{ fontFamily: "JetBrains Mono, monospace", color: "#727878" }}>
+            {answeredCount} answered
+          </span>
         </div>
-        {/* Timer */}
-        <span
-          className="text-sm font-bold shrink-0"
-          style={{
-            fontFamily: "JetBrains Mono, monospace",
-            color: timerWarning ? "#e11d48" : "#414848",
-          }}
-        >
-          {formatTime(timeLeft)}
-        </span>
+        <div className="w-full h-1 rounded-full bg-[#e8efef] overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{ width: `${pct}%`, backgroundColor: "#051f1f" }}
+          />
+        </div>
       </div>
 
       {/* Skill tag */}
@@ -357,6 +387,7 @@ export default function MockTest({ questions, durationSeconds = 1800 }: Props) {
           All answered — submit early
         </button>
       )}
+    </div>
     </div>
   )
 }
