@@ -6,6 +6,7 @@ import ScoreRing from "@/components/ScoreRing"
 import ExportPDFButton from "@/components/ExportPDFButton"
 import { SKILL_COLORS } from "@/types"
 import type { Skill, CEFRBand } from "@/types"
+import Link from "next/link"
 
 const CEFR_COLOR: Record<CEFRBand, string> = {
   C2: "#3f51b5",
@@ -31,6 +32,7 @@ export default async function ProgressPage() {
     { data: mockResults },
     { data: recentProgress },
     { data: userRow },
+    { data: placementHistory },
   ] = await Promise.all([
     supabase.from("streaks").select("*").eq("user_id", userId).maybeSingle(),
     supabase.from("leaderboard_scores").select("xp, weekly_xp").eq("user_id", userId).maybeSingle(),
@@ -51,6 +53,7 @@ export default async function ProgressPage() {
       .eq("user_id", userId)
       .gte("answered_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
     supabase.from("users").select("current_cefr, starting_cefr, exam_date").eq("id", userId).maybeSingle(),
+    supabase.from("placement_results").select("cefr_result, taken_at").eq("user_id", userId).order("taken_at", { ascending: false }).limit(5),
   ])
 
   const streak = streakRow ?? { current_streak: 0, longest_streak: 0 }
@@ -242,6 +245,60 @@ export default async function ProgressPage() {
           })}
         </div>
       )}
+      {/* Placement test history */}
+      {(placementHistory?.length ?? 0) > 0 && (
+        <div className="card p-5 flex flex-col gap-3">
+          <span className="text-label-caps" style={{ color: "#727878" }}>PLACEMENT HISTORY</span>
+          {placementHistory!.map((r, i) => {
+            const prev = placementHistory![i + 1]?.cefr_result ?? null
+            const CEFR_ORDER = ["A1", "A2", "B1", "B2", "C1", "C2"]
+            const ni = CEFR_ORDER.indexOf(r.cefr_result)
+            const pi = prev ? CEFR_ORDER.indexOf(prev) : -1
+            const delta = !prev ? null : ni > pi ? "↑" : ni < pi ? "↓" : "="
+            const deltaColor = !delta ? "#727878" : delta === "↑" ? "#266a4b" : delta === "↓" ? "#b94040" : "#414848"
+            return (
+              <div key={i} className="flex items-center justify-between py-2 border-b border-[#e8efef] last:border-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs" style={{ fontFamily: "JetBrains Mono, monospace", color: "#727878" }}>
+                    📅 {new Date(r.taken_at).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
+                  </span>
+                  <span className="font-bold" style={{ fontFamily: "JetBrains Mono, monospace", color: "#161d1d" }}>
+                    → {r.cefr_result}
+                  </span>
+                  {delta && (
+                    <span style={{ color: deltaColor, fontWeight: 700 }}>{delta}</span>
+                  )}
+                  {!prev && (
+                    <span className="text-xs" style={{ color: "#727878", fontFamily: "Source Serif 4, serif" }}>(starting)</span>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Retake CTA */}
+      <div
+        className="rounded-xl p-5 flex items-center justify-between gap-4"
+        style={{ background: "#fff", border: "1px solid #e8efef", boxShadow: "0 2px 0 0 #c1c8c7" }}
+      >
+        <div>
+          <p className="text-body-md font-semibold" style={{ color: "#161d1d", fontFamily: "Source Serif 4, serif" }}>
+            Not sure about your current level?
+          </p>
+          <p className="text-sm" style={{ color: "#727878", fontFamily: "Source Serif 4, serif" }}>
+            Takes ~10 minutes · 15 questions
+          </p>
+        </div>
+        <Link
+          href="/placement-test"
+          className="shrink-0 px-4 py-2 rounded-xl text-white text-sm font-semibold no-underline"
+          style={{ backgroundColor: "#051f1f", fontFamily: "Source Serif 4, serif", boxShadow: "0 2px 0 0 #c1c8c7" }}
+        >
+          Retake Test →
+        </Link>
+      </div>
     </div>
   )
 }

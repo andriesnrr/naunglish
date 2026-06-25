@@ -11,7 +11,7 @@ export default async function ProfilePage() {
   const userId = session.user.id
 
   const [{ data: user }, { data: settings }] = await Promise.all([
-    supabase.from("users").select("name, exam_date").eq("id", userId).maybeSingle(),
+    supabase.from("users").select("name, exam_date, current_cefr").eq("id", userId).maybeSingle(),
     supabase.from("user_settings").select("daily_goal, notif_email, privacy_public").eq("user_id", userId).maybeSingle(),
   ])
 
@@ -24,6 +24,7 @@ export default async function ProfilePage() {
       dailyGoal={settings?.daily_goal ?? 20}
       notifEmail={settings?.notif_email ?? true}
       privacyPublic={settings?.privacy_public ?? false}
+      currentCefr={user?.current_cefr ?? null}
     />
   )
 }

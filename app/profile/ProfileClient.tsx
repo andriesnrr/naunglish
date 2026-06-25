@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { signOut } from "next-auth/react"
 import Image from "next/image"
+import Link from "next/link"
 
 type Props = {
   name: string
@@ -12,10 +13,12 @@ type Props = {
   dailyGoal: number
   notifEmail: boolean
   privacyPublic: boolean
+  currentCefr: string | null
 }
 
 export default function ProfileClient(props: Props) {
   const [name, setName] = useState(props.name)
+  const currentCefr = props.currentCefr
   const [examDate, setExamDate] = useState(props.examDate ?? "")
   const [dailyGoal, setDailyGoal] = useState(props.dailyGoal)
   const [notifEmail, setNotifEmail] = useState(props.notifEmail)
@@ -78,6 +81,23 @@ export default function ProfileClient(props: Props) {
         <h2 className="text-headline-md" style={{ color: "#161d1d", fontFamily: "Source Serif 4, serif" }}>
           Account Settings
         </h2>
+
+        {/* Current level */}
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-medium" style={{ color: "#414848", fontFamily: "Source Serif 4, serif" }}>Current level</span>
+            <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "20px", fontWeight: 700, color: "#051f1f" }}>
+              {currentCefr ?? "—"}
+            </span>
+          </div>
+          <Link
+            href="/placement-test"
+            className="px-4 py-2 rounded-xl text-sm font-semibold no-underline"
+            style={{ backgroundColor: "#051f1f", color: "#fff", fontFamily: "Source Serif 4, serif", boxShadow: "0 2px 0 0 #c1c8c7" }}
+          >
+            Retake Test →
+          </Link>
+        </div>
 
         {/* Name */}
         <div className="flex flex-col gap-1.5">
