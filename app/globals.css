@@ -1,26 +1,131 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Colors */
+  --color-primary: #000000;
+  --color-primary-container: #051f1f;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #6f8988;
+  --color-on-primary-fixed: #051f1f;
+  --color-on-primary-fixed-variant: #324b4b;
+  --color-primary-fixed: #cce8e7;
+  --color-primary-fixed-dim: #b1cccb;
+  --color-secondary: #5f5f59;
+  --color-secondary-container: #e4e3db;
+  --color-on-secondary-container: #65655f;
+  --color-surface: #f4fbfa;
+  --color-surface-container-low: #eef5f4;
+  --color-surface-container: #e8efef;
+  --color-surface-container-high: #e3e9e9;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #dde4e3;
+  --color-on-surface: #161d1d;
+  --color-on-surface-variant: #414848;
+  --color-outline: #727878;
+  --color-outline-variant: #c1c8c7;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-academic-paper: #f6f4ec;
+  --color-academic-card: #fbf9f1;
+  --color-accent-moss: #4a5d4e;
+  --color-accent-clay: #8e5d44;
+  --color-accent-gold: #d4af37;
+  --color-accent-forest: #266a4b;
+  --color-accent-indigo: #3f51b5;
+  --color-accent-brown: #7d5a3c;
+
+  /* Typography */
+  --font-serif: "Source Serif 4", serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --font-size-display-lg: 40px;
+  --line-height-display-lg: 48px;
+  --letter-spacing-display-lg: -0.02em;
+  --font-weight-display-lg: 700;
+
+  --font-size-headline-md: 24px;
+  --line-height-headline-md: 32px;
+  --font-weight-headline-md: 600;
+
+  --font-size-body-lg: 18px;
+  --line-height-body-lg: 28px;
+  --font-weight-body-lg: 400;
+
+  --font-size-body-md: 16px;
+  --line-height-body-md: 24px;
+  --font-weight-body-md: 400;
+
+  --font-size-label-caps: 12px;
+  --line-height-label-caps: 16px;
+  --letter-spacing-label-caps: -0.05em;
+  --font-weight-label-caps: 700;
+
+  --font-size-code-sm: 13px;
+  --line-height-code-sm: 20px;
+  --font-weight-code-sm: 400;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Body background — academic dot grid */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f6f4ec;
+  background-image: radial-gradient(#c1c8c7 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-attachment: fixed;
+  color: #161d1d;
+  font-family: "Source Serif 4", serif;
+  min-height: 100vh;
+}
+
+/* Typography utilities */
+.text-display-lg {
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-family: "Source Serif 4", serif;
+}
+
+.text-headline-md {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  font-family: "Source Serif 4", serif;
+}
+
+.text-body-lg {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+  font-family: "Source Serif 4", serif;
+}
+
+.text-body-md {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  font-family: "Source Serif 4", serif;
+}
+
+.text-label-caps {
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.05em;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+  text-transform: uppercase;
+}
+
+.text-code-sm {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Global card style */
+.card {
+  background: #fbf9f1;
+  border: 1px solid #c1c8c7;
+  box-shadow: 0 2px 0 0 #c1c8c7;
+  border-radius: 0.75rem;
 }
